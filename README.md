@@ -2,6 +2,7 @@
 # vLLM Docker Optimized for DGX Spark (single or multi-node)
 
 This repository contains the Docker configuration and startup scripts to run a multi-node vLLM inference cluster using Ray. It supports InfiniBand/RDMA (NCCL) and custom environment configuration for high-performance setups.
+Cluster setup supports direct connect between dual Sparks, connecting via QSFP/RoCE switch and 3-node mesh configuration.
 
 While it was primarily developed to support multi-node inference, it works just as well on a single node setups.
 
@@ -134,7 +135,7 @@ For periodic maintenance, I recommend using a filter: `docker builder prune --fi
 
 ## CHANGELOG
 
-### 2026-03-30
+### 2026-03-31
 
 #### Flags to specify Flashinfer ref and apply PRs
 
