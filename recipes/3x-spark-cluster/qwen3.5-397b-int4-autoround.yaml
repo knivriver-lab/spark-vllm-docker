@@ -55,6 +55,7 @@ command: |
     --chat-template unsloth.jinja \
     -tp 1 \
     -pp {pipeline_parallel} \
+    --load-format fastsafetensors \
     --distributed-executor-backend ray
 
   
