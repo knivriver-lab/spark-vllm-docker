@@ -1,47 +1,29 @@
 # Recipe: Qwen3.5-122B-A10B-FP8
-# Qwen3.5-122B model in native FP8 quantization
+# LOCKED 2026-04-09 — canonical FP8 config, BF16 compute, GB10 native
+# DO NOT CHANGE without Bjorn sign-off. See memory/specs/spark1-model-state.md
 
 recipe_version: "1"
 name: Qwen3.5-122B-FP8
-description: vLLM serving Qwen3.5-122B-FP8
+description: vLLM serving Qwen3.5-122B-FP8 (BF16 compute, FP8 storage, TP=2 dual-Spark)
 
-# HuggingFace model to download (optional, for --download-model)
 model: Qwen/Qwen3.5-122B-A10B-FP8
 
-# Only cluster is supported
 cluster_only: true
 
-# Container image to use
 container: vllm-node
 
-# No mods required
 mods:
   - mods/fix-qwen3.5-chat-template
 
-# Default settings (can be overridden via CLI)
 defaults:
   port: 8000
   host: 0.0.0.0
   tensor_parallel: 2
-  gpu_memory_utilization: 0.7
-  max_model_len: 262144
+  gpu_memory_utilization: 0.88
+  max_model_len: 131072
   max_num_batched_tokens: 8192
 
-# Environment variables
 env: {}
 
-# The vLLM serve command template
 command: |
-  vllm serve Qwen/Qwen3.5-122B-A10B-FP8 \
-    --max-model-len {max_model_len} \
-    --gpu-memory-utilization {gpu_memory_utilization} \
-    --port {port} \
-    --host {host} \
-    --load-format fastsafetensors \
-    --enable-prefix-caching \
-    --enable-auto-tool-choice \
-    --tool-call-parser qwen3_coder \
-    --reasoning-parser qwen3 \
-    --chat-template unsloth.jinja \
-    -tp {tensor_parallel} --distributed-executor-backend ray \
-    --max-num-batched-tokens {max_num_batched_tokens}
+  vllm serve Qwen/Qwen3.5-122B-A10B-FP8     --dtype bfloat16     --quantization fp8     --kv-cache-dtype fp8     --max-model-len {max_model_len}     --gpu-memory-utilization {gpu_memory_utilization}     --port {port}     --host {host}     --enable-prefix-caching     --enable-auto-tool-choice     --tool-call-parser qwen3_coder        --chat-template unsloth.jinja     --served-model-name qwen35-122b     --trust-remote-code     -tp {tensor_parallel} --distributed-executor-backend ray     --max-num-batched-tokens {max_num_batched_tokens}
